@@ -4,10 +4,13 @@
 
 from __future__ import unicode_literals
 
-from flask_menu.classy import classy_menu_item
+from flask import jsonify, request
 from marshmallow import fields
+from flask_menu.classy import classy_menu_item
 
-from wazo_admin_ui.helpers.classful import BaseView, BaseDestinationView
+from wazo_admin_ui.helpers.classful import LoginRequiredView
+from wazo_admin_ui.helpers.classful import BaseView
+from wazo_admin_ui.helpers.classful import extract_select2_params, build_select2_response
 from wazo_admin_ui.helpers.mallow import BaseSchema, BaseAggregatorSchema, extract_form_fields
 
 from .form import TrunkForm
@@ -36,13 +39,13 @@ class TrunkView(BaseView):
         return super(TrunkView, self).index()
 
 
-class TrunkDestinationView(BaseDestinationView):
+class TrunkListingView(LoginRequiredView):
 
     def list_json(self):
-        params = self._extract_params()
+        params = extract_select2_params(request.args)
         trunks = self.service.list(**params)
         results = self._populate_list(trunks['items'])
-        return self._select2_response(results, trunks['total'], params)
+        return jsonify(build_select2_response(results, trunks['total'], params))
 
     def _populate_list(self, trunks):
         results = []

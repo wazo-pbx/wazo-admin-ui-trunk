@@ -8,7 +8,7 @@ from wazo_admin_ui.helpers.plugin import create_blueprint
 from wazo_admin_ui.helpers.destination import register_listing_url
 
 from .service import TrunkService
-from .view import TrunkView, TrunkDestinationView
+from .view import TrunkView, TrunkListingView
 
 
 trunk = create_blueprint('trunk', __name__)
@@ -24,9 +24,9 @@ class Plugin(object):
         TrunkView.register(trunk, route_base='/trunks')
         register_flaskview(trunk, TrunkView)
 
-        TrunkDestinationView.service = TrunkService(config['confd'])
-        TrunkDestinationView.register(trunk, route_base='/trunks_listing')
+        TrunkListingView.service = TrunkService(config['confd'])
+        TrunkListingView.register(trunk, route_base='/trunks_listing')
 
-        register_listing_url('trunk', 'trunk.TrunkDestinationView:list_json')
+        register_listing_url('trunk', 'trunk.TrunkListingView:list_json')
 
         core.register_blueprint(trunk)
