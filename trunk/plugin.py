@@ -18,13 +18,12 @@ class Plugin(object):
 
     def load(self, dependencies):
         core = dependencies['flask']
-        config = dependencies['config']
 
-        TrunkView.service = TrunkService(config['confd'])
+        TrunkView.service = TrunkService()
         TrunkView.register(trunk, route_base='/trunks')
         register_flaskview(trunk, TrunkView)
 
-        TrunkListingView.service = TrunkService(config['confd'])
+        TrunkListingView.service = TrunkService()
         TrunkListingView.register(trunk, route_base='/trunks_listing')
 
         register_listing_url('trunk', 'trunk.TrunkListingView:list_json')
