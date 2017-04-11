@@ -7,5 +7,4 @@ from wazo_admin_ui.helpers.service import BaseConfdService
 
 class TrunkService(BaseConfdService):
 
-    resource_name = 'trunk'
     resource_confd = 'trunks'

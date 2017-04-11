@@ -23,15 +23,6 @@ class TrunkView(BaseView):
     def index(self):
         return super(TrunkView, self).index()
 
-    def _map_resources_to_form(self, resources):
-        return self.form(data=resources['trunk'])
-
-    def _map_form_to_resources(self, form, form_id=None):
-        resources = {'trunk': form.to_dict()}
-        if form_id:
-            resources['trunk']['id'] = form_id
-        return resources
-
     def _map_resources_to_form_errors(self, form, resources):
         form.populate_errors(resources.get('trunk', {}))
         return form
