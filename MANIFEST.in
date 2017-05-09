@@ -1,2 +1,2 @@
-recursive-include trunk/templates *
-recursive-include trunk/static *
+recursive-include wazo_plugind_admin_ui_trunk_official/templates *
+recursive-include wazo_plugind_admin_ui_trunk_official/static *

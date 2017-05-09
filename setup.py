@@ -23,7 +23,7 @@ setup(
 
     entry_points={
         'wazo_admin_ui.plugins': [
-            'trunk = trunk.plugin:Plugin',
+            'trunk = wazo_plugind_admin_ui_trunk_official.plugin:Plugin',
         ]
     }
 )
