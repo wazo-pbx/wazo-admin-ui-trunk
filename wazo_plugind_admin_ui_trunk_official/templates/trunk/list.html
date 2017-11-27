@@ -8,18 +8,13 @@
   <section class="content">
     {% call build_list_containers('Trunks', 'server') %}
       {% call build_list_table() %}
-        {% call build_list_table_headers() %}
+        {% call build_list_table_headers(get=url_for('.TrunkView:get', id=''), delete=url_for('.TrunkView:delete', id='')) %}
           <th>Name</th>
           <th>Description</th>
-          {{ add_list_table_header_action() }}
         {% endcall %}
         {% call(trunk) build_list_table_rows(resource_list['items']) %}
           <td>{{ trunk.name }}</td>
           <td>{{ trunk.description }}</td>
-          <td>
-            {{ add_edit_button(href=url_for('.TrunkView:get', id=trunk.id)) }}
-            {{ add_delete_button(href=url_for('.TrunkView:delete', id=trunk.id)) }}
-          </td>
         {% endcall %}
       {% endcall %}
     {% endcall %}
