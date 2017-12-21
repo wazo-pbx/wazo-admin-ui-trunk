@@ -8,3 +8,7 @@ tags:
   - beta
   - routing
 homepage: https://github.com/wazo-pbx/wazo-admin-ui-trunk
+depends:
+  - name: admin-ui-context
+    namespace: official
+    version: 1.0.1
