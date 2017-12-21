@@ -9,22 +9,40 @@
     {% call build_list_containers('Trunks', 'server') %}
       {% call build_list_table() %}
         {% call build_list_table_headers(get=url_for('.TrunkView:get', id=''), delete=url_for('.TrunkView:delete', id='')) %}
-          <th>Name</th>
-          <th>Description</th>
+          <th width="75">{{ _('Protocol') }}</th>
+          <th>{{ _('Name') }}</th>
         {% endcall %}
         {% call(trunk) build_list_table_rows(resource_list['items']) %}
-          <td>{{ trunk.name }}</td>
-          <td>{{ trunk.description }}</td>
+          <td>
+            {% if trunk.endpoint_sip %}
+              SIP
+            {% elif trunk.endpoint_custom %}
+              CUSTOM
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if trunk.endpoint_sip %}
+              {{ trunk.endpoint_sip.username }}
+            {% elif trunk.endpoint_custom %}
+              {{ trunk.endpoint_custom.interface }}
+            {% endif %}
+          </td>
         {% endcall %}
       {% endcall %}
     {% endcall %}
 
-    {% call build_hidden_add_containers('Add Trunk') %}
-      {% call build_form() %}
-        {% call add_default_fields(form=form, submit_value="Add") %}
-          {{ render_field(form.name) }}
-        {% endcall %}
-      {% endcall %}
+
+    {% call build_hidden_add_containers(_('Choose your protocol')) %}
+      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='sip') }}'">SIP</button>
+      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='custom') }}'">CUSTOM</button>
     {% endcall %}
+
   </section>
+{% endblock %}
+
+
+{% block additional_js %}
+  <script src="{{ url_for('.static', filename='js/trunk.js') }}"></script>
 {% endblock %}
