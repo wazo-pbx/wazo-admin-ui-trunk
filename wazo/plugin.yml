@@ -3,7 +3,7 @@ namespace: official
 version: 1.1.0
 author: Wazo Team
 display_name: Trunks
-min_wazo_version: 17.17
+min_wazo_version: 18.01
 tags:
   - beta
   - routing
