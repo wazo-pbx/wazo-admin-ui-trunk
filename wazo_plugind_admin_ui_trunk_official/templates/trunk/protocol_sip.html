@@ -18,17 +18,17 @@
     {% call build_tabs_content() %}
         {% call build_tab_content_item('trunk', active=True) %}
            {% call add_default_fields(form=form, submit_value="Add") %}
+            {{ render_field(form.endpoint_sip['username']) }}
+            {{ render_field(form.endpoint_sip['secret']) }}
+            {{ render_field(form.endpoint_sip['host']) }}
+            {{ render_field(form.endpoint_sip['host_value'], placeholder='Set host value') }}
+            {{ render_field(form.endpoint_sip['type']) }}
             {{ render_field(form.context,
                             data_allow_clear=True,
                             class_='trunk-context',
                             placeholder='Choose Context',
                             data_listing_href=url_for(listing_urls['context'])) }}
             {{ render_field(form.twilio_incoming) }}
-            {{ render_field(form.endpoint_sip['username']) }}
-            {{ render_field(form.endpoint_sip['secret']) }}
-            {{ render_field(form.endpoint_sip['type']) }}
-            {{ render_field(form.endpoint_sip['host']) }}
-            {{ render_field(form.endpoint_sip['host_value'], placeholder='Set host value') }}
           {% endcall %}
         {% endcall %}
 
