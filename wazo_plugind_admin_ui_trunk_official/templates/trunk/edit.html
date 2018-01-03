@@ -1,17 +1,106 @@
 {% extends "layout.html" %}
 
 {% block content_header %}
-  {{ build_breadcrumb('Trunks', '', 'server', ['List']) }}
+  {{ build_breadcrumb(_('Trunks'), '', 'server', ['List']) }}
 {% endblock %}
 
 {% block content %}
   {% call build_section_row() %}
-    {% call build_form_box('Trunk', resource.name, 'server') %}
-      {% call build_form(action=url_for('.TrunkView:put', id=resource.id)) %}
-        {% call add_default_fields(form=form, submit_value="Update") %}
-          {{ render_field(form.name) }}
+
+    {% if form.protocol.data == 'sip' %}
+
+      {% call build_form_tabs_box() %}
+        {% call build_tabs_navigation() %}
+          {{ add_tab_navigation_header(_('Trunk'), form.endpoint_sip.username.data, 'server') }}
+          {{ add_tab_navigation_item('trunk', _('Trunk'), active=True) }}
+          {{ add_tab_navigation_item('options', _('Options')) }}
+        {% endcall %}
+
+        {% call build_form(action=url_for('.TrunkView:put', id=resource.id)) %}
+          {% call build_tabs_content() %}
+
+            {% call build_tab_content_item('trunk', active=True) %}
+              {% call add_default_fields(form=form, submit_value="Update") %}
+                {{ render_field(form.endpoint_sip['id']) }}
+                {{ render_field(form.endpoint_sip['username']) }}
+                {{ render_field(form.endpoint_sip['secret']) }}
+                {{ render_field(form.endpoint_sip['host']) }}
+                {{ render_field(form.endpoint_sip['host_value'], placeholder='Set host value') }}
+                {{ render_field(form.endpoint_sip['type']) }}
+                {{ render_field(form.context,
+                                data_allow_clear=True,
+                                class_='trunk-context',
+                                placeholder='Choose Context',
+                                data_listing_href=url_for(listing_urls['context'])) }}
+                {{ render_field(form.twilio_incoming) }}
+              {% endcall %}
+            {% endcall %}
+
+            {% call build_tab_content_item('options') %}
+              {% call add_default_fields(form=form, submit_value="Update") %}
+                {{ build_add_row_entry_header() }}
+                {% call build_table() %}
+
+                  {% call build_table_headers() %}
+                    <th>{{  _('Option Key') }}</th>
+                    <th>{{  _('Option Value') }}</th>
+                    <th style="width: 21px"></th>
+                  {% endcall %}
+
+                  {% call build_table_body(class_='dynamic-table') %}
+                    {% do form.endpoint_sip.options.append_entry() %}
+                    {{ _build_option_entry(form.endpoint_sip.options.pop_entry(), template=True) }}
+
+                    {% for option in form.endpoint_sip.options %}
+                      {{ _build_option_entry(option) }}
+                    {% endfor %}
+                  {% endcall %}
+
+                {% endcall %}
+              {% endcall %}
+            {% endcall %}
+
+          {% endcall %}
         {% endcall %}
       {% endcall %}
-    {% endcall %}
+
+    {% elif form.protocol.data == 'custom' %}
+
+      {% call build_form_box(_('Trunk'), form.endpoint_custom.interface.data, 'server') %}
+        {% call build_form(action=url_for('.TrunkView:put', id=resource.id)) %}
+          {% call add_default_fields(form=form, submit_value="Update") %}
+            {{ render_field(form.endpoint_custom['id']) }}
+            {{ render_field(form.endpoint_custom['interface']) }}
+            {{ render_field(form.context,
+                            data_allow_clear=True,
+                            class_='trunk-context',
+                            placeholder='Choose Context',
+                            data_listing_href=url_for(listing_urls['context'])) }}
+            {{ render_field(form.twilio_incoming) }}
+          {% endcall %}
+        {% endcall %}
+      {% endcall %}
+
+    {% endif %}
+
   {% endcall %}
+{% endblock %}
+
+
+{% macro _build_option_entry(option, template=False) %}
+  {% if template %}
+    {% set tr_class = "row-template hidden" %}
+  {% else %}
+    {% set tr_class = "row-line" %}
+  {% endif %}
+  <tr class="{{ tr_class }}">
+    <td>{{ render_field(option.option_key, with_label=False) }}</td>
+    <td>{{ render_field(option.option_value, with_label=False) }}</td>
+    <td>{{ add_delete_entry_button() }}</td>
+  </tr>
+{% endmacro %}
+
+
+{% block additional_js %}
+  <script src="{{ url_for('.static', filename='js/trunk.js') }}"></script>
 {% endblock %}

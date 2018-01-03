@@ -1,28 +1,99 @@
 # Copyright 2017 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0+
 
-from flask import jsonify, request
+from flask_babel import lazy_gettext as l_
+from flask import jsonify, request, render_template
 from flask_menu.classy import classy_menu_item
 
-from wazo_admin_ui.helpers.classful import LoginRequiredView
-from wazo_admin_ui.helpers.classful import BaseView
-from wazo_admin_ui.helpers.classful import extract_select2_params, build_select2_response
+from wazo_admin_ui.helpers.classful import (LoginRequiredView,
+                                            BaseView,
+                                            NewViewMixin,
+                                            extract_select2_params,
+                                            build_select2_response)
+from wazo_admin_ui.helpers.destination import listing_urls
 
 from .form import TrunkForm
 
 
 class TrunkView(BaseView):
-
     form = TrunkForm
     resource = 'trunk'
 
-    @classy_menu_item('.trunks', 'Trunks', order=4, icon="server")
+    @classy_menu_item('.trunks', l_('Trunks'), order=4, icon="server")
     def index(self):
         return super(TrunkView, self).index()
+
+    def new(self, protocol):
+        if protocol not in ['sip', 'custom']:
+            return self._index()
+
+        return render_template(self._get_template('protocol_{}'.format(protocol)),
+                               form=self.form(),
+                               listing_urls=listing_urls)
+
+    def _map_resources_to_form(self, resource):
+        endpoint_sip = endpoint_custom = protocol = None
+        if resource['endpoint_sip']:
+            protocol = 'sip'
+            endpoint_sip = self.service.get_endpoint_sip(resource['endpoint_sip']['id'])
+            if endpoint_sip['host'] != 'dynamic':
+                endpoint_sip['host_value'] = endpoint_sip['host']
+                endpoint_sip['host'] = 'static'
+            endpoint_sip['options'] = self._build_sip_options(endpoint_sip['options'])
+        elif resource['endpoint_custom']:
+            protocol = 'custom'
+            endpoint_custom = self.service.get_endpoint_custom(resource['endpoint_custom']['id'])
+        form = self.form(data=resource,
+                         protocol=protocol,
+                         endpoint_sip=endpoint_sip,
+                         endpoint_custom=endpoint_custom)
+        return form
+
+    def _build_sip_options(self, options):
+        result = []
+        for option in options:
+            result.append({'option_key': option[0],
+                           'option_value': option[1]})
+
+        return result
+
+    def _populate_form(self, form):
+        form.context.choices = self._build_set_choices_context(form.context)
+        return form
+
+    def _build_set_choices_context(self, context_form):
+        if not context_form.data or context_form.data == 'None':
+            return []
+
+        context = self.service.get_context(context_form.data)
+        if context:
+            return [(context['name'], context['label'])]
+
+        return [(context_form.data, context_form.data)]
 
     def _map_resources_to_form_errors(self, form, resources):
         form.populate_errors(resources.get('trunk', {}))
         return form
+
+    def _map_form_to_resources(self, form, form_id=None):
+        resource = super(TrunkView, self)._map_form_to_resources(form, form_id)
+        if 'username' in resource['endpoint_sip']:
+            resource = self._map_form_to_resource_sip_options(form, resource)
+            if resource['endpoint_sip']['host'] == 'static':
+                resource['endpoint_sip']['host'] = form.endpoint_sip.host_value.data
+            del resource['endpoint_custom']
+        elif 'interface' in resource['endpoint_custom']:
+            del resource['endpoint_sip']
+
+        return resource
+
+    def _map_form_to_resource_sip_options(self, form, resource):
+        options = []
+        for option in resource['endpoint_sip']['options']:
+            options.append([option['option_key'], option['option_value']])
+
+        resource['endpoint_sip']['options'] = options
+        return resource
 
 
 class TrunkListingView(LoginRequiredView):
