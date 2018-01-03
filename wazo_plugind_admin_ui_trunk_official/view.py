@@ -23,13 +23,12 @@ class TrunkView(BaseView):
     def index(self):
         return super(TrunkView, self).index()
 
-    def new(self, protocol, form=None):
+    def new(self, protocol):
         if protocol not in ['sip', 'custom']:
-            return self._index(form)
+            return self._index()
 
-        form = form or self.form()
         return render_template(self._get_template('protocol_{}'.format(protocol)),
-                               form=form,
+                               form=self.form(),
                                listing_urls=listing_urls)
 
     def _map_resources_to_form(self, resource):
@@ -65,10 +64,10 @@ class TrunkView(BaseView):
     def _build_set_choices_context(self, context_form):
         if not context_form.data or context_form.data == 'None':
             return []
-        else:
-            context = self.service.get_context(context_form.data)
-            if context:
-                return [(context['name'], context['label'])]
+
+        context = self.service.get_context(context_form.data)
+        if context:
+            return [(context['name'], context['label'])]
 
         return [(context_form.data, context_form.data)]
 
