@@ -1,6 +1,6 @@
 name: admin-ui-trunk
 namespace: official
-version: 1.1.0
+version: 1.1.0-1
 author: Wazo Team
 display_name: Trunks
 min_wazo_version: 18.01
@@ -11,4 +11,4 @@ homepage: https://github.com/wazo-pbx/wazo-admin-ui-trunk
 depends:
   - name: admin-ui-context
     namespace: official
-    version: 1.0.1
+    version: 1.0.1-1
