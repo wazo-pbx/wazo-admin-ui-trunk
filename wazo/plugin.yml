@@ -1,6 +1,6 @@
 name: admin-ui-trunk
 namespace: official
-version: 1.1.1-2
+version: 1.1.1-3
 author: Wazo Team
 display_name: Trunks
 min_wazo_version: 18.01
