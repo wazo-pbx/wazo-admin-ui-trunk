@@ -16,6 +16,8 @@
           <td>
             {% if trunk.endpoint_sip %}
               SIP
+            {% elif trunk.endpoint_iax %}
+              IAX
             {% elif trunk.endpoint_custom %}
               CUSTOM
             {% else %}
@@ -25,6 +27,8 @@
           <td>
             {% if trunk.endpoint_sip %}
               {{ trunk.endpoint_sip.username }}
+            {% elif trunk.endpoint_iax %}
+              {{ trunk.endpoint_iax.name }}
             {% elif trunk.endpoint_custom %}
               {{ trunk.endpoint_custom.interface }}
             {% endif %}
@@ -36,6 +40,7 @@
 
     {% call build_hidden_add_containers(_('Choose your protocol')) %}
       <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='sip') }}'">SIP</button>
+      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='iax') }}'">IAX</button>
       <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='custom') }}'">CUSTOM</button>
     {% endcall %}
 

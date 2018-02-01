@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content_header %}
-  {{ build_breadcrumb(_('Trunks'), '', 'server', ['List']) }}
+  {{ build_breadcrumb(_('Trunks'), '', 'server', [_('Edit')]) }}
 {% endblock %}
 
 {% block content %}
@@ -20,12 +20,12 @@
           {% call build_tabs_content() %}
 
             {% call build_tab_content_item('trunk', active=True) %}
-              {% call add_default_fields(form=form, submit_value="Update") %}
+              {% call add_default_fields(form=form, submit_value=_('Update')) %}
                 {{ render_field(form.endpoint_sip['id']) }}
                 {{ render_field(form.endpoint_sip['username']) }}
                 {{ render_field(form.endpoint_sip['secret']) }}
                 {{ render_field(form.endpoint_sip['host']) }}
-                {{ render_field(form.endpoint_sip['host_value'], placeholder='Set host value') }}
+                {{ render_field(form.endpoint_sip['host_value'], placeholder=_('Set host value')) }}
                 {{ render_field(form.endpoint_sip['type']) }}
                 {{ render_field(form.context,
                                 data_allow_clear=True,
@@ -37,7 +37,7 @@
             {% endcall %}
 
             {% call build_tab_content_item('options') %}
-              {% call add_default_fields(form=form, submit_value="Update") %}
+              {% call add_default_fields(form=form, submit_value=_('Update')) %}
                 {{ build_add_row_entry_header() }}
                 {% call build_table() %}
 
@@ -64,11 +64,67 @@
         {% endcall %}
       {% endcall %}
 
+    {% elif form.protocol.data == 'iax' %}
+
+      {% call build_form_tabs_box() %}
+        {% call build_tabs_navigation() %}
+          {{ add_tab_navigation_header(_('Trunk'), form.endpoint_iax.name.data, 'server') }}
+          {{ add_tab_navigation_item('trunk', _('Trunk'), active=True) }}
+          {{ add_tab_navigation_item('options', _('Options')) }}
+        {% endcall %}
+
+        {% call build_form(action=url_for('.TrunkView:put', id=resource.id)) %}
+          {% call build_tabs_content() %}
+
+            {% call build_tab_content_item('trunk', active=True) %}
+              {% call add_default_fields(form=form, submit_value=_('Update')) %}
+                {{ render_field(form.endpoint_iax['id']) }}
+                {{ render_field(form.endpoint_iax['name']) }}
+                {{ render_field(form.endpoint_iax['host']) }}
+                {{ render_field(form.endpoint_iax['host_value'], placeholder=_('Set host value')) }}
+                {{ render_field(form.endpoint_iax['type']) }}
+                {{ render_field(form.context,
+                                data_allow_clear=True,
+                                class_='trunk-context',
+                                placeholder=_('Choose Context'),
+                                data_listing_href=url_for(listing_urls['context'])) }}
+                {{ render_field(form.twilio_incoming) }}
+              {% endcall %}
+            {% endcall %}
+
+            {% call build_tab_content_item('options') %}
+              {% call add_default_fields(form=form, submit_value=_('Update')) %}
+                {{ build_add_row_entry_header() }}
+                {% call build_table() %}
+
+                  {% call build_table_headers() %}
+                    <th>{{  _('Option Key') }}</th>
+                    <th>{{  _('Option Value') }}</th>
+                    <th style="width: 21px"></th>
+                  {% endcall %}
+
+                  {% call build_table_body(class_='dynamic-table') %}
+                    {% do form.endpoint_iax.options.append_entry() %}
+                    {{ _build_option_entry(form.endpoint_iax.options.pop_entry(), template=True) }}
+
+                    {% for option in form.endpoint_iax.options %}
+                      {{ _build_option_entry(option) }}
+                    {% endfor %}
+                  {% endcall %}
+
+                {% endcall %}
+              {% endcall %}
+            {% endcall %}
+
+          {% endcall %}
+        {% endcall %}
+      {% endcall %}
+
     {% elif form.protocol.data == 'custom' %}
 
       {% call build_form_box(_('Trunk'), form.endpoint_custom.interface.data, 'server') %}
         {% call build_form(action=url_for('.TrunkView:put', id=resource.id)) %}
-          {% call add_default_fields(form=form, submit_value="Update") %}
+          {% call add_default_fields(form=form, submit_value=_('Update')) %}
             {{ render_field(form.endpoint_custom['id']) }}
             {{ render_field(form.endpoint_custom['interface']) }}
             {{ render_field(form.context,
