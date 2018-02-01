@@ -9,7 +9,8 @@ from wtforms.fields import (
     SelectField,
     HiddenField,
     FieldList,
-    FormField
+    FormField,
+    IntegerField
 )
 from wtforms.validators import InputRequired, Length
 
@@ -47,11 +48,27 @@ class EnpointIaxForm(BaseForm):
     options = FieldList(FormField(OptionsForm))
 
 
+class RegisterSIPForm(BaseForm):
+    id = HiddenField()
+    enabled = BooleanField(l_('Enabled'), default=False)
+    sip_username = StringField(l_('SIP Username'), validators=[InputRequired()])
+    auth_username = StringField(l_('Authentication Username'))
+    auth_password = StringField(l_('Authentication Password'))
+    remote_host = StringField(l_('Remote Host'), validators=[InputRequired()])
+    remote_port = IntegerField(l_('Remote port'))
+    transport = SelectField(l_('Transport'),
+                            choices=[('', l_('None')), ('tcp', l_('TCP')), ('tls', l_('TLS')), ('udp', l_('UDP')),
+                                     ('ws', l_('WS')), ('wss', l_('WSS'))])
+    callback_extension = StringField(l_('Callback Extension'))
+    expiration = IntegerField(l_('Expiration'))
+
+
 class TrunkForm(BaseForm):
     context = SelectField(l_('Context'), choices=[])
-    protocol = SelectField(choices=[('sip', l_('SIP')),('iax', l_('IAX')), ('custom', l_('CUSTOM'))])
+    protocol = SelectField(choices=[('sip', l_('SIP')), ('iax', l_('IAX')), ('custom', l_('CUSTOM'))])
     twilio_incoming = BooleanField(l_('Twilio Incoming'), default=False)
     endpoint_sip = FormField(EnpointSipForm)
     endpoint_iax = FormField(EnpointIaxForm)
     endpoint_custom = FormField(EnpointCustomForm)
+    register_sip = FormField(RegisterSIPForm)
     submit = SubmitField(l_('Submit'))

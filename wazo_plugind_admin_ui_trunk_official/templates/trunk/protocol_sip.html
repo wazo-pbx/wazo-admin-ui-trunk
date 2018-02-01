@@ -11,13 +11,14 @@
   {% call build_tabs_navigation() %}
     {{ add_tab_navigation_header(_('Trunk'), '', 'server') }}
     {{ add_tab_navigation_item('trunk', _('Trunk'), active=True) }}
+    {{ add_tab_navigation_item('register', _('Register')) }}
     {{ add_tab_navigation_item('options', _('Options')) }}
   {% endcall %}
 
   {% call build_form(action=url_for('.TrunkView:post')) %}
     {% call build_tabs_content() %}
         {% call build_tab_content_item('trunk', active=True) %}
-           {% call add_default_fields(form=form, submit_value="Add") %}
+          {% call add_default_fields(form=form, submit_value=_('Add')) %}
             {{ render_field(form.endpoint_sip['username']) }}
             {{ render_field(form.endpoint_sip['secret']) }}
             {{ render_field(form.endpoint_sip['host']) }}
@@ -31,9 +32,23 @@
             {{ render_field(form.twilio_incoming) }}
           {% endcall %}
         {% endcall %}
+      
+        {% call build_tab_content_item('register') %}
+         {% call add_default_fields(form=form, submit_value=_('Add')) %}
+           {{ render_field(form.register_sip['enabled']) }}
+           {{ render_field(form.register_sip['sip_username']) }}
+           {{ render_field(form.register_sip['auth_username']) }}
+           {{ render_field(form.register_sip['auth_password']) }}
+           {{ render_field(form.register_sip['remote_host']) }}
+           {{ render_field(form.register_sip['remote_port']) }}
+           {{ render_field(form.register_sip['transport']) }}
+           {{ render_field(form.register_sip['callback_extension']) }}
+           {{ render_field(form.register_sip['expiration']) }}
+         {% endcall %}
+        {% endcall %}
 
         {% call build_tab_content_item('options') %}
-           {% call add_default_fields(form=form, submit_value="Add") %}
+           {% call add_default_fields(form=form, submit_value=_('Add')) %}
             {{ build_add_row_entry_header() }}
             {% call build_table() %}
 
