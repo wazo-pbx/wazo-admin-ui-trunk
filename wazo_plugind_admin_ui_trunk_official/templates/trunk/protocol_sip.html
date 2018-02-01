@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content_header %}
-  {{ build_breadcrumb(_('Trunks'), '', 'server', ['List']) }}
+  {{ build_breadcrumb(_('Trunks'), '', 'server', [_('List')]) }}
 {% endblock %}
 
 {% block content %}
@@ -22,12 +22,12 @@
             {{ render_field(form.endpoint_sip['username']) }}
             {{ render_field(form.endpoint_sip['secret']) }}
             {{ render_field(form.endpoint_sip['host']) }}
-            {{ render_field(form.endpoint_sip['host_value'], placeholder='Set host value') }}
+            {{ render_field(form.endpoint_sip['host_value'], placeholder=_('Set host value')) }}
             {{ render_field(form.endpoint_sip['type']) }}
             {{ render_field(form.context,
                             data_allow_clear=True,
                             class_='trunk-context',
-                            placeholder='Choose Context',
+                            placeholder=_('Choose Context'),
                             data_listing_href=url_for(listing_urls['context'])) }}
             {{ render_field(form.twilio_incoming) }}
           {% endcall %}

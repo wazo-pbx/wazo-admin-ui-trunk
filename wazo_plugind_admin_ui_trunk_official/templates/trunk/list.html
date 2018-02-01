@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content_header %}
-  {{ build_breadcrumb('Trunk', '', 'server', ['List']) }}
+  {{ build_breadcrumb(_('Trunk'), '', 'server', [_('List')]) }}
 {% endblock %}
 
 {% block content %}
   <section class="content">
-    {% call build_list_containers('Trunks', 'server') %}
+    {% call build_list_containers(_('Trunks'), 'server') %}
       {% call build_list_table() %}
         {% call build_list_table_headers(get=url_for('.TrunkView:get', id=''), delete=url_for('.TrunkView:delete', id='')) %}
           <th width="75">{{ _('Protocol') }}</th>
@@ -46,9 +46,9 @@
 
 
     {% call build_hidden_add_containers(_('Choose your protocol')) %}
-      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='sip') }}'">SIP</button>
-      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='iax') }}'">IAX</button>
-      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='custom') }}'">CUSTOM</button>
+      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='sip') }}'">{{ _('SIP') }}</button>
+      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='iax') }}'">{{ _('IAX') }}</button>
+      <button type="button" class="btn btn-block btn-default" onclick="location.href='{{ url_for('.TrunkView:new', protocol='custom') }}'">{{ _('CUSTOM') }}</button>
     {% endcall %}
 
   </section>
