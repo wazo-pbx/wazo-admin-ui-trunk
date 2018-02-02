@@ -82,7 +82,6 @@ class RegisterIAXForm(BaseForm):
 class TrunkForm(BaseForm):
     context = SelectField(l_('Context'), choices=[])
     protocol = SelectField(choices=[('sip', l_('SIP')), ('iax', l_('IAX')), ('custom', l_('CUSTOM'))])
-    twilio_incoming = BooleanField(l_('Twilio Incoming'), default=False)
     endpoint_sip = FormField(EnpointSipForm)
     endpoint_iax = FormField(EnpointIaxForm)
     endpoint_custom = FormField(EnpointCustomForm)
