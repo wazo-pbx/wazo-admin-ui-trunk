@@ -11,6 +11,7 @@
   {% call build_tabs_navigation() %}
     {{ add_tab_navigation_header(_('Trunk'), '', 'server') }}
     {{ add_tab_navigation_item('trunk', _('Trunk'), active=True) }}
+    {{ add_tab_navigation_item('register', _('Register')) }}
     {{ add_tab_navigation_item('options', _('Options')) }}
   {% endcall %}
 
@@ -29,6 +30,19 @@
                             data_listing_href=url_for(listing_urls['context'])) }}
             {{ render_field(form.twilio_incoming) }}
           {% endcall %}
+        {% endcall %}
+
+        {% call build_tab_content_item('register') %}
+         {% call add_default_fields(form=form, submit_value=_('Add')) %}
+           {{ render_field(form.register_iax['id']) }}
+           {{ render_field(form.register_iax['enabled']) }}
+           {{ render_field(form.register_iax['auth_username']) }}
+           {{ render_field(form.register_iax['auth_password']) }}
+           {{ render_field(form.register_iax['callback_context']) }}
+           {{ render_field(form.register_iax['callback_extension']) }}
+           {{ render_field(form.register_iax['remote_host']) }}
+           {{ render_field(form.register_iax['remote_port']) }}
+         {% endcall %}
         {% endcall %}
 
         {% call build_tab_content_item('options') %}

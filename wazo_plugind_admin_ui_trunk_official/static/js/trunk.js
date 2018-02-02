@@ -11,6 +11,10 @@ $(document).ready(function () {
     toggle_register_form('sip');
   });
   toggle_register_form('sip');
+  $('#register_iax-enabled').on('change', function (e) {
+    toggle_register_form('iax');
+  })
+  toggle_register_form('iax');
 });
 
 

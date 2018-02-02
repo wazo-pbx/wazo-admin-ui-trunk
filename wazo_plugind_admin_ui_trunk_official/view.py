@@ -46,6 +46,8 @@ class TrunkView(BaseView):
             endpoint_iax = self.service.get_endpoint_iax(resource['endpoint_iax']['id'])
             self._build_host_for_endpoint(endpoint_iax)
             endpoint_iax['options'] = self._build_sip_iax_options(endpoint_iax['options'])
+            if resource['register_iax']:
+                resource['register_iax'] = self.service.get_register_iax(resource['register_iax']['id'])
             resource['endpoint_iax'] = endpoint_iax
         elif resource['endpoint_custom']:
             resource['protocol']= 'custom'
@@ -85,7 +87,7 @@ class TrunkView(BaseView):
         resource = super()._map_form_to_resources(form, form_id)
         if 'username' in resource['endpoint_sip']:
             self._map_form_to_resource_endpoint(resource['endpoint_sip'])
-            del resource['endpoint_custom'], resource['endpoint_iax']
+            del resource['endpoint_custom'], resource['endpoint_iax'], resource['register_iax']
             if resource['register_sip']['enabled'] is False and \
                resource['register_sip']['remote_host'] is None and \
                resource['register_sip']['sip_username'] is None:
@@ -93,8 +95,11 @@ class TrunkView(BaseView):
         elif 'name' in resource['endpoint_iax']:
             self._map_form_to_resource_endpoint(resource['endpoint_iax'])
             del resource['endpoint_custom'], resource['endpoint_sip']
+            if resource['register_iax']['enabled'] is False and \
+               resource['register_iax']['remote_host'] is None:
+                resource['register_iax'] = None
         elif 'interface' in resource['endpoint_custom']:
-            del resource['endpoint_sip'], resource['endpoint_iax'], resource['register_sip']
+            del resource['endpoint_sip'], resource['endpoint_iax'], resource['register_sip'], resource['register_iax']
 
         return resource
 

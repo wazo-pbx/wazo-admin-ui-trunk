@@ -63,6 +63,17 @@ class RegisterSIPForm(BaseForm):
     expiration = IntegerField(l_('Expiration'))
 
 
+class RegisterIAXForm(BaseForm):
+    id = HiddenField()
+    enabled = BooleanField(l_('Enabled'), default=False)
+    auth_username = StringField(l_('Authentication Username'))
+    auth_password = StringField(l_('Authentication Password'))
+    callback_context = StringField(l_('Callback Context'))
+    callback_extension = StringField(l_('Callback Extension'))
+    remote_host = StringField(l_('Remote Host'), validators=[InputRequired()])
+    remote_port = IntegerField(l_('Remote port'))
+
+
 class TrunkForm(BaseForm):
     context = SelectField(l_('Context'), choices=[])
     protocol = SelectField(choices=[('sip', l_('SIP')), ('iax', l_('IAX')), ('custom', l_('CUSTOM'))])
@@ -71,4 +82,5 @@ class TrunkForm(BaseForm):
     endpoint_iax = FormField(EnpointIaxForm)
     endpoint_custom = FormField(EnpointCustomForm)
     register_sip = FormField(RegisterSIPForm)
+    register_iax = FormField(RegisterIAXForm)
     submit = SubmitField(l_('Submit'))
