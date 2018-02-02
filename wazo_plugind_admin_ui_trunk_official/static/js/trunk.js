@@ -13,9 +13,35 @@ $(document).ready(function () {
   toggle_register_form('sip');
   $('#register_iax-enabled').on('change', function (e) {
     toggle_register_form('iax');
-  })
+  });
   toggle_register_form('iax');
+  $("[id$='auth_username']").on('change', function (e) {
+    toggle_register_auth_validator();
+  });
+  $('#register_iax-callback_context').on('change', function (e) {
+    toggle_register_iax_callback_validator();
+  });
 });
+
+
+function toggle_register_auth_validator() {
+    if ($("[id$='auth_username']").val().length > 0) {
+      $("[id$='auth_password']").attr('required', 'required');
+    } else {
+      $("[id$='auth_password']").removeAttr('required');
+    }
+    $('form').validator('update');
+}
+
+
+function toggle_register_iax_callback_validator() {
+    if ($('#register_iax-callback_context').val().length > 0) {
+      $('#register_iax-callback_extension').attr('required', 'required');
+    } else {
+      $('#register_iax-callback_extension').removeAttr('required');
+    }
+    $('form').validator('update');
+}
 
 
 function toggle_endpoint_sip_host_mode() {
