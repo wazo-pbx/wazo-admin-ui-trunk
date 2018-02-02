@@ -11,6 +11,7 @@
         {% call build_list_table_headers(get=url_for('.TrunkView:get', id=''), delete=url_for('.TrunkView:delete', id='')) %}
           <th width="75">{{ _('Protocol') }}</th>
           <th>{{ _('Name') }}</th>
+          <th>{{ _('Relations') }}</th>
         {% endcall %}
         {% call(trunk) build_list_table_rows(resource_list['items']) %}
           <td>
@@ -32,6 +33,12 @@
             {% elif trunk.endpoint_custom %}
               {{ trunk.endpoint_custom.interface }}
             {% endif %}
+          </td>
+          <td>
+            {% for outcall in trunk.outcalls %}
+              <strong>{{ _('outcall') }}:</strong> <a href="{{ url_for('outcall.OutcallView:get', id=outcall.id) }}">{{ outcall.name }}</a>
+            {% endfor %}
+            {{ '-' if not trunk.outcalls }}
           </td>
         {% endcall %}
       {% endcall %}
