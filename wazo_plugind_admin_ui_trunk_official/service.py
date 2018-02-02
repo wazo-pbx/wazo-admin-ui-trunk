@@ -66,7 +66,6 @@ class TrunkService(BaseConfdService):
             register_sip = confd.registers_sip.create(resource['register_sip'])
             confd.trunks(resource).add_register_sip(register_sip)
         elif existing_trunk.get('register_sip') and not resource.get('register_sip'):
-            confd.trunks(resource).remove_register_sip(existing_trunk['register_sip'])
             confd.registers_sip.delete(existing_trunk['register_sip'])
 
     def _update_register_iax(self, resource):
@@ -77,5 +76,4 @@ class TrunkService(BaseConfdService):
             register_iax = confd.registers_iax.create(resource['register_iax'])
             confd.trunks(resource).add_register_iax(register_iax)
         elif existing_trunk.get('register_iax') and not resource.get('register_iax'):
-            confd.trunks(resource).remove_register_iax(existing_trunk['register_iax'])
             confd.registers_iax.delete(existing_trunk['register_iax']['id'])
