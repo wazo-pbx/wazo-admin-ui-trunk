@@ -48,5 +48,5 @@ function toggle_register_form(protocol) {
       $(this).attr('data-validate', false)
     });
   }
-  $('form').validator('update').validator('validate');
+  $('form').validator('update');
 }
