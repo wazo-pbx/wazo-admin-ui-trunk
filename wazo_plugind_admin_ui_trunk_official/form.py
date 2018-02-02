@@ -3,14 +3,14 @@
 
 from flask_babel import lazy_gettext as l_
 from wtforms.fields import (
-    SubmitField,
-    StringField,
     BooleanField,
-    SelectField,
-    HiddenField,
     FieldList,
     FormField,
-    IntegerField
+    HiddenField,
+    IntegerField,
+    SelectField,
+    StringField,
+    SubmitField,
 )
 from wtforms.validators import InputRequired, Length
 
@@ -56,9 +56,14 @@ class RegisterSIPForm(BaseForm):
     auth_password = StringField(l_('Authentication Password'))
     remote_host = StringField(l_('Remote Host'), validators=[InputRequired()])
     remote_port = IntegerField(l_('Remote port'))
-    transport = SelectField(l_('Transport'),
-                            choices=[('', l_('None')), ('tcp', l_('TCP')), ('tls', l_('TLS')), ('udp', l_('UDP')),
-                                     ('ws', l_('WS')), ('wss', l_('WSS'))])
+    transport = SelectField(l_('Transport'), choices=[
+        ('', l_('None')),
+        ('tcp', l_('TCP')),
+        ('tls', l_('TLS')),
+        ('udp', l_('UDP')),
+        ('ws', l_('WS')),
+        ('wss', l_('WSS'))
+    ])
     callback_extension = StringField(l_('Callback Extension'))
     expiration = IntegerField(l_('Expiration'))
 
