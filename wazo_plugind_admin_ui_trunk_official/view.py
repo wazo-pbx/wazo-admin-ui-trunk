@@ -34,19 +34,23 @@ class TrunkView(BaseView):
 
     def _map_resources_to_form(self, resource):
         if resource['endpoint_sip']:
-            resource['protocol']= 'sip'
+            resource['protocol'] = 'sip'
             endpoint_sip = self.service.get_endpoint_sip(resource['endpoint_sip']['id'])
             self._build_host_for_endpoint(endpoint_sip)
             endpoint_sip['options'] = self._build_sip_iax_options(endpoint_sip['options'])
+            if resource['register_sip']:
+                resource['register_sip'] = self.service.get_register_sip(resource['register_sip']['id'])
             resource['endpoint_sip'] = endpoint_sip
         elif resource['endpoint_iax']:
             resource['protocol'] = 'iax'
             endpoint_iax = self.service.get_endpoint_iax(resource['endpoint_iax']['id'])
             self._build_host_for_endpoint(endpoint_iax)
             endpoint_iax['options'] = self._build_sip_iax_options(endpoint_iax['options'])
+            if resource['register_iax']:
+                resource['register_iax'] = self.service.get_register_iax(resource['register_iax']['id'])
             resource['endpoint_iax'] = endpoint_iax
         elif resource['endpoint_custom']:
-            resource['protocol']= 'custom'
+            resource['protocol'] = 'custom'
             endpoint_custom = self.service.get_endpoint_custom(resource['endpoint_custom']['id'])
             resource['endpoint_custom'] = endpoint_custom
 
@@ -82,22 +86,31 @@ class TrunkView(BaseView):
     def _map_form_to_resources(self, form, form_id=None):
         resource = super()._map_form_to_resources(form, form_id)
         if 'username' in resource['endpoint_sip']:
-            self._map_form_to_resource_endpoint(resource['endpoint_sip'])
-            del resource['endpoint_custom'], resource['endpoint_iax']
+            resource['endpoint_sip'] = self._map_form_to_resource_endpoint(resource['endpoint_sip'])
+            del resource['endpoint_custom'], resource['endpoint_iax'], resource['register_iax']
+            if (not resource['register_sip']['enabled'] and
+                    not resource['register_sip']['remote_host'] and
+                    not resource['register_sip']['sip_username']):
+                resource['register_sip'] = None
+
         elif 'name' in resource['endpoint_iax']:
-            self._map_form_to_resource_endpoint(resource['endpoint_iax'])
+            resource['endpoint_iax'] = self._map_form_to_resource_endpoint(resource['endpoint_iax'])
             del resource['endpoint_custom'], resource['endpoint_sip']
+            if (not resource['register_iax']['enabled'] and
+                    not resource['register_iax']['remote_host']):
+                resource['register_iax'] = None
+
         elif 'interface' in resource['endpoint_custom']:
-            del resource['endpoint_sip'], resource['endpoint_iax']
+            del resource['endpoint_sip'], resource['endpoint_iax'], resource['register_sip'], resource['register_iax']
 
         return resource
 
     def _map_form_to_resource_endpoint(self, endpoint):
         if endpoint['host'] == 'static':
-            endpoint['host'] = endpoint['host_value']
-        del endpoint['host_value']
+            endpoint['host'] = endpoint.pop('host_value')
 
         endpoint['options'] = [[option['option_key'], option['option_value']] for option in endpoint['options']]
+        return endpoint
 
 
 class TrunkListingView(LoginRequiredView):
