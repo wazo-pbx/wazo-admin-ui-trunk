@@ -11,6 +11,7 @@
   {% call build_form(action=url_for('.TrunkView:post')) %}
      {% call add_default_fields(form=form, submit_value=_('Add')) %}
       {{ render_field(form.endpoint_custom['interface']) }}
+      {{ render_field(form.endpoint_custom['interface_suffix']) }}
       {{ render_field(form.context,
                       data_allow_clear=True,
                       class_='trunk-context',
