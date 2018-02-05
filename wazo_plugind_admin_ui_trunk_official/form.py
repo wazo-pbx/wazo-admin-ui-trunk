@@ -20,6 +20,7 @@ from wazo_admin_ui.helpers.form import BaseForm
 class EnpointCustomForm(BaseForm):
     id = HiddenField()
     interface = StringField(l_('Interface'), validators=[InputRequired()])
+    interface_suffix = StringField(l_('Interface Suffix'), validators=[Length(max=32)])
 
 
 class OptionsForm(BaseForm):
