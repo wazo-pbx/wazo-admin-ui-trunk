@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content_header %}
-  {{ build_breadcrumb(_('Trunks'), '', 'server', ['List']) }}
+  {{ build_breadcrumb(_('Trunks'), '', 'server', [_('List')]) }}
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
       {{ render_field(form.context,
                       data_allow_clear=True,
                       class_='trunk-context',
-                      placeholder='Choose Context',
+                      placeholder=_('Choose Context'),
                       data_listing_href=url_for(listing_urls['context'])) }}
     {% endcall %}
   {% endcall %}
